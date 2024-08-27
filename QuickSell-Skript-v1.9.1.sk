@@ -1,0 +1,408 @@
+#▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+#  Official Release
+#  QuickSell Skript - 1.9.1
+#   written by SSK Projects
+#▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+#	Setup Documentation
+#		Installing
+#			Step 1: Download and install requried plugins.
+#			Step 2: Customize your skript
+#		Requried Plugins
+#			'Vault' required:
+#				https://www.spigotmc.org/resources/vault.34315/
+#
+#       	'EssentialsX' required:
+#				https://essentialsx.net/downloads.html
+#
+#▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+variables:
+#Variables
+
+	{sell-message} = true
+	{disabled-message} = true
+	{remove-items} = true
+	{give-money} = true
+	{admin-command} = true
+	{console-strings} = true
+	{selleritem} = true
+	{boosters} = true
+
+	{version} = "1.9.1"
+	#> Version of Skript, don't change this!
+#▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+options:
+#Configuration
+
+	Prefix: &b&lQUICK&d&lSELL &8»
+	#|> To disable prefix set it to '&r'
+	#> Style
+
+	SellMessage: &b&lSELLER &8» &7You sold your blocks for &d%{_money}% &fdollars.
+	NothingToSell: &b&lSELLER &8» &cYou don't have anything to sell here!
+	FunctionDisabledMessage: &7This function is disabled.
+	#> Messages
+
+	Command: sell
+	CommandPermission: quicksell.sellcommand
+	CommandPermissionMessage: &cYou don't have permission to do this.
+	CommandAliases: sellblocks, sellitems, sellmyblocks, sellmyitems, seller
+	#> Permission options
+
+	AdminCommandPermission: quicksell.admin
+	#> Permission for admin command
+
+	AdminCommand: quicksell
+	AdminCommandAliases: qs, quicksell:qs, quicksell:quicksell
+	ErrorStringMissing: &cAn String missing from your command!
+	InvalidString: &cThis String is not an option!
+	FatalErrorMessage: &cFatal error occured! This function can't be used due to inner conflicts in the configuration.
+	#> Admin command options
+
+	LoadMessage: &7QuickSell v%{version}% is loaded!
+	UnloadMessage: &7QuickSell v%{version}% was unloaded!
+	#> Send message to console when skript changes its status
+#▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+#Boosters (Multipliers)
+#> Multiplying money rewards (! req give-money = TRUE)
+#> Player's boosters are set back to normal if players joins the server.
+#|>  Maximum time for a booster: 12 hours (this cap can be removed)
+	
+	BoosterCommandPermission: quicksell.booster
+	BoosterCommandNoPermission: &cYou don't have permission to do this!
+	#> Permission settings to SellerItem
+
+	BoosterReset: &aSuccessfull restart!
+	BoosterNeutral: &cThis player's booster level is already default!
+	BoosterCheck: &fPlayer &6%arg-2%'s booster: &b%{booster.%arg-2%}%
+	# Messages
+
+	BoosterSetUp-Admin: &aBooster set up for player %arg-2%!
+	BoosterSetUp-Player: &aSuccessfully activated a booster!
+	#> Result Messages
+
+	#! ----------
+	#! We recommend you to use a newer or more rational way of coding the booster durations
+	#! ----------
+	BoosterDuration: false
+	#! If duration is false = the booster never resets
+	BoosterTimeValue: 180 minutes
+	#|> Default time is 3 hours, optimal time doesn't go above 12 hours.
+	BoosterTimeTrigger: 1 seconds
+	#|> Only if skript is ENABLED the timer counts per X sec to check booster duration.
+	#> Booster System Settings
+#▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+#Seller Item
+#(( Lastest version of EssentialsX needed ))
+
+	SellerItemTypeCode: nether star
+	SellerItemTypeBase: nether_star
+	# SellerItemTypeExtra_1: french_fries
+	# SellerItemTypeExtra_2: french_fries
+	# SellerItemTypeExtra_3: french_fries
+	#|> Use the valid item names for each plugin!
+
+	SellerItemCodeName: SellerItem
+	SellerItemBaseName: &aSell_&7(Right_Click)
+	SellerItemLore: &8Sell_your_blocks_instantly!||&f&lDEFAULT&7_mine_prices
+	#|> Style your item!
+
+	SellerItemObtainCommand: getselleritem
+	SellerItemObtainPermission: selleritem.give
+	SellerItemObtainNoPermission: &cYou don't have permission to do this!
+	#|> Basic settings to SellerItem
+
+	SellerItemSellCommand: sell
+	SellerItemGive: give %player% {@SellerItemTypeBase} 1 name:{@SellerItemBaseName} lore:{@SellerItemLore}
+	#! Command execution varies based on the minecraft version which the server is running on
+	SellerItemMessage: &b&lSELLER&d&lITEM &8» &7Selling blocks with Seller Item..
+	SellerItemObtain: &aYou obtained a {@SellerItemCodeName}!
+	#|> You can also set up more seller items, but then you need to forget this panel
+	#> Seller Item Settings and messages
+
+#! BOOSTER DURATION CONFIGURATION
+#> Triggers (base) every 1 seconds
+#!> If you want to increase time value due to lag please don't change it to 1 min or higher!
+every {@BoosterTimeTrigger}:
+	if {@BoosterDuration} is true:
+		if difference between now and {booster.%arg-2%.use} is more than {@BoosterTimeValue}:
+			set {booster.%arg-2%} to 1
+
+on join:
+	if {@BoosterDuration} is true:
+		set {booster.%player%} to 1
+
+#Seller Item Function
+#(( Running command 'sell' or something with this item ))
+on rightclick with {@SellerItemTypeCode}:
+	if {selleritem} is true:
+		execute player command "{@SellerItemSellCommand}"
+		send "{@SellerItemMessage}"
+	else:
+		if {disabled-message} is true:
+			send "{@Prefix} {@FunctionDisabledMessage}" to player
+
+# Inventory
+on inventory click:
+    if name of event-item is "{@SellerItemBaseName}":
+   		cancel event
+		if {selleritem} is true:
+			execute player command "{@SellerItemSellCommand}"
+			send "{@SellerItemMessage}" 
+
+#Seller Item Command
+#(( The way to get the item ))
+command /{@SellerItemObtainCommand}:
+	permission: {@SellerItemObtainPermission}
+	permission message: {@Prefix} {@SellerItemObtainNoPermission}
+	trigger:
+		if {selleritem} is true:
+			execute console command "{@SellerItemGive}"
+			send "{@Prefix} {@SellerItemObtain}"
+		else:
+			if {disabled-message} is true:
+				send "{@Prefix} {@FunctionDisabledMessage}" to player
+#▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+# Booster Command
+command /booster [<text>] [<offlineplayer>] [<integer>]:
+	aliases: boosters, multipliers, multiplier
+	permission: {BoosterCommandPermission}
+	permission message: {BoosterCommandNoPermission}
+	trigger:
+		if {give-money} is true:
+			if {boosters} is true:
+				if arg-1 is set:
+					if arg-1 is "multiplier" or "reset" or "status":
+						if arg-1 is "reset":
+							if arg-2 is set:
+								if {booster.%arg-2%} is 1:
+									send "{@BoosterNeutral}"
+									stop
+								else:
+									set {booster.%arg-2%} to 1 
+									send "{@BoosterReset}" 
+							else:
+								send "{@ErrorStringMissing}"
+						if arg-1 is "status":
+							if arg-2 is set:
+								send "{@Prefix} {@BoosterCheck}"
+							else:
+								send "{@ErrorStringMissing}"
+						if arg-1 is "multiplier":
+							if arg-2 is set:
+								if arg-3 is set:
+									set {booster.%arg-2%} to arg-3
+									send "{@Prefix} {@BoosterSetUp-Admin}" to sender
+									send "{@Prefix} {@BoosterSetUp-Player}" to arg-2
+									set {booster.%arg-2%.use} to now
+								else:
+									send "{@ErrorStringMissing}"
+							else:
+								send "{@ErrorStringMissing}"
+					else:
+						send "{@InvalidString}"
+				else: 
+					send "&b&lQUICK&d&lSELL &7Boosters"
+					send "&fPanel"
+					send ""
+					send "&b&lCommands &8[&f▼&8]"
+					send " &b/booster multiplier &d<player>"
+					send " &8- &7Set up booster for player for &o3 hours&r&7."
+					send " &b/booster reset &d<player> &8- &7Reset"
+					send " &7player's booster with command."
+					send " &b/booster status &d<player> &8- &7Check"
+					send " &7player's booster level."
+					if player has permission "*":
+						send "&c[ADMIN] Note: Default booster duration is 3 hours"
+			else:
+				if {disabled-message} is true:
+					send "{@Prefix} {@FunctionDisabledMessage}" to player
+		else:
+			send "{@Prefix} {@FatalErrorMessage}"
+#▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+command /{@Command}:
+	aliases: {@CommandAliases}
+	permission: {@CommandPermission}
+	permission message: {@CommandPermissionMessage}
+	trigger:
+		if {quicksellcommand} is true: 
+			#! Make sure to use the needed materials.
+			#> You can use infinite amount of materials.
+			add 100 * number of iron block in player's inventory * {booster.%player%} to {_money}
+			add 200 * number of gold block in player's inventory * {booster.%player%} to {_money}
+			add 300 * number of diamond block in player's inventory * {booster.%player%} to {_money}
+			add 400 * number of emerald block in player's inventory * {booster.%player%} to {_money}
+			if {_money} is less than 1:
+				wait 1 ticks
+				send "{@NothingToSell}"
+				clear {_money}
+				stop
+			#! Use base ItemMeta ID or NBT
+			#! Don't forget to add new numbers!
+			if {remove-items} is true:
+				remove all iron block, gold block, diamond block and emerald block from player's inventory
+				# Don't forget to add materials here
+				#! This feature was tested with named items back in the day, and errors occured. This may doesn't changed.
+			if {sell-message} is true:
+				wait 1 ticks
+				send "{@SellMessage}" to player
+			if {give-money} is true:
+				wait 1 ticks
+				add {_money} to player's balance
+				#> Above this line you must edit the configuration if you prefer to use non-Essentials economy systems
+				#! <--- EXAMPLE COMMAND ---> execute console command "myuniqueeconomyplugin givebalance %{_money}% %player%"
+			clear {_money}
+		else:
+			if {disabled-message} is true:
+				send "{@Prefix} {@FunctionDisabledMessage}" to player
+#▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+#Admin Command
+command /{@AdminCommand} [<text>] [<text>]:
+	aliases: {@AdminCommandAliases}
+	permission: {@AdminCommandPermission}
+	permission message: {@CommandPermissionMessage}
+	trigger:
+		if {admin-command} is true:
+			if arg-1 is set:
+				if arg-1 is "list" or "edit" or "selleritem" or "booster" or "boosters":
+					if arg-1 is "selleritem":
+						if {selleritem} is true:
+							execute console command "give %player% {@SellerItemTypeBase} 1 name:{@SellerItemBaseName} lore:{@SellerItemLore}"
+							send "{@Prefix} &aYou obtained a {@SellerItemCodeName}! &8(With '&7{@AdminCommand}&8' command)"
+						else:
+							if {disabled-message} is true:
+								send "{@Prefix} {@FunctionDisabledMessage}" to player
+					if arg-1 is "booster" or "boosters":
+						if {boosters} is true:
+							execute player command "booster"
+						else:
+							if {disabled-message} is true:
+								send "{@Prefix} {@FunctionDisabledMessage}" to player
+					if arg-1 is "edit":
+						if arg-2 is set:
+							if arg-2 is "Disabled-Message" or "Remove-Items" or "Give-Money" or "Admin-Command" or "Boosters" or "Sell MSG" or "QuickSellCommand" or "SellerItem":
+								if arg-2 is "Disabled-Message":
+									if {disabled-message} is true:
+										set {disabled-message} to false
+										send "&cDisabled-Message is now &c&lDISABLED"
+									else:
+										set {disabled-message} to true
+										send "&aDisabled-Message is now &a&lENABLED"
+								if arg-2 is "Remove-Items":
+									if {remove-items} is true:
+										set {remove-items} to false
+										send "&cRemove-Items is now &c&lDISABLED"
+									else:
+										set {remove-items} to true
+										send "&aRemove-Items is now &a&lENABLED"
+								if arg-2 is "Give-Money":
+									if {give-money} is true:
+										set {give-money} to false
+										send "&cGive-Money is now &c&lDISABLED"
+									else:
+										set {give-money} to true
+										send "&aGive-Money is now &a&lENABLED"
+								if arg-2 is "Admin-Command":
+									if {admin-command} is true:
+										set {admin-command} to false
+										send "&cAdmin-Command is now &c&lDISABLED"
+									else:
+										set {admin-command} to true
+										send "&aAdmin-Command is now &a&lENABLED"
+								if arg-2 is "Boosters":
+									if {boosters} is true:
+										set {boosters} to false
+										send "&cBoosters is now &c&lDISABLED"
+										send "&cPlayer's active boosters aren't working anymore!"
+									else:
+										set {boosters} to true
+										send "&aBoosters is now &a&lENABLED"
+										send "&aPlayer's active boosters working agin!"
+								if arg-2 is "Sell MSG":
+									if {sell-message} is true:
+										set {sell-message} to false
+										send "&cSell MSG is now &c&lDISABLED"
+									else:
+										set {sell-message} to true
+										send "&aSell MSG is now &a&lENABLED"
+								if arg-2 is "QuickSellCommand":
+									if {quicksellcommand} is true:
+										set {quicksellcommand} to false
+										send "&cQuickSellCommand is now &c&lDISABLED"
+									else:
+										set {quicksellcommand} to true
+										send "&aQuickSellCommand is now &a&lENABLED"
+								if arg-2 is "SellerItem":
+									if {selleritem} is true:
+										set {selleritem} to false
+										send "&cSellerItem is now &c&lDISABLED"
+									else:
+										set {selleritem} to true
+										send "&aSellerItem is now &a&lENABLED"		
+							else:
+								send "{@Prefix} {@InvalidString}"
+						else:
+							send "{@Prefix} {@ErrorStringMissing}"
+					if arg-1 is "list":
+						send "{@Prefix} &7List of variables."
+						send ""
+						send "&8Essentials-Check &7&l(( REMOVED IN 1.8.3 ))"
+						send "&8Notify-Message &7&l(( REMOVED IN 1.9 ))"
+						if {quicksellcommand} is true:
+							send "&aQuickSellCommand &a&l(( ENABLED ))"
+						else:
+							send "&cQuickSellCommand &c&l(( DISABLED ))"
+						if {boosters} is true:
+							send "&aBoosters &a&l(( ENABLED ))"
+						else:
+							send "&cBoosters &c&l(( DISABLED ))"
+						if {disabled-message} is true:
+							send "&aDisabled Function's Notification &a&l(( ENABLED ))"
+						else:
+							send "&cDisabled Function's Notification &c&l(( DISABLED ))"
+						if {sell-message} is true:
+							send "&aSell MSG &a&l(( ENABLED ))"
+						else:
+							send "&cSell MSG &c&l(( DISABLED ))"
+						if {admin-command} is true:
+							send "&aAdmin-Command &a&l(( ENABLED ))"
+						else:
+							send "&cAdmin-Command &c&l(( DISABLED ))"
+						if {give-money} is true:
+							send "&aGive-Money &a&l(( ENABLED ))"
+						else:
+							send "&cGive-Money &c&l(( DISABLED ))"
+						if {remove-items} is true:
+							send "&aRemove-Items &a&l(( ENABLED ))"
+						else:
+							send "&cRemove-Items &c&l(( DISABLED ))"
+						if {console-strings} is true:
+							send "&aConsole-Strings &a&l(( ENABLED ))"
+						else:
+							send "&cConsole-Strings &c&l(( DISABLED ))"
+						if {disabled-message} is true:
+							send "&aDisabled-Message &a&l(( ENABLED ))"
+						else:
+							send "&cDisabled-Message &c&l(( DISABLED ))"
+						if {selleritem} is true:
+							send "&aSellerItem &a&l(( ENABLED ))"
+						else:
+							send "&cSellerItem &c&l(( DISABLED ))"
+				else:
+					execute player command "{@AdminCommand}"
+			else:
+				send "&f&lPanel"
+				send "&7v%{version}%"
+				send ""
+				send "&fCommands"
+				send " &a/{@AdminCommand} &dlist"
+				send " &a/{@AdminCommand} &dedit &6[function]"
+				send " &a/{@AdminCommand} &dselleritem"
+				send " &a/{@AdminCommand} &dboosters"
+				send ""
+		else:
+			if {disabled-message} is true:
+				send "{@Prefix} {@FunctionDisabledMessage}" to player
+			else:
+				stop
+#▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+#End of the file
